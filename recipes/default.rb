@@ -25,9 +25,9 @@
 #
 
 if node["users"].any? { |user| user["shell"] == "/bin/zsh" }
-	package "zsh" do
-		action :upgrade
-	end
+  package "zsh" do
+    action :upgrade
+  end
 end
 
 node["users"].each do |user|
