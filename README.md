@@ -52,7 +52,7 @@ Attributes
 
 Usage
 -----
-#### bastion_user::default
+#### user::default
 
 Specify some users in the `users` attribute and add `users` to the node's `run_list`:
 

@@ -2,7 +2,7 @@
 # Cookbook Name:: users
 # Recipe:: default
 #
-# Copyright 2014, Travis CI GmbH
+# Copyright 2015, Travis CI GmbH
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -24,30 +24,29 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-if node["users"].any? { |user| user["shell"] == "/bin/zsh" }
-  package "zsh" do
-    action :upgrade
-  end
+package 'zsh' do
+  action :upgrade
+  only_if { node['users'].any? { |u| u['shell'] == '/bin/zsh' } }
 end
 
-node["users"].each do |user|
-  user user["id"] do
-    supports :manage_home => true
-    home "/home/#{user["id"]}"
-    shell user["shell"]
+node['users'].each do |user|
+  user user['id'] do
+    supports manage_home: true
+    home "/home/#{user['id']}"
+    shell user['shell']
   end
 
-  directory "/home/#{user["id"]}/.ssh" do
-    mode "0700"
-    owner user["id"]
-    group user["id"]
+  directory "/home/#{user['id']}/.ssh" do
+    owner user['id']
+    group user['id']
+    mode 0700
   end
 
-  template "/home/#{user["id"]}/.ssh/authorized_keys" do
-    mode "0644"
-    owner user["id"]
-    group user["id"]
-    source "authorized_keys.erb"
-    variables :keys => user["ssh_keys"]
+  template "/home/#{user['id']}/.ssh/authorized_keys" do
+    owner user['id']
+    group user['id']
+    mode 0644
+    source 'authorized_keys.erb'
+    variables(keys: user['ssh_keys'])
   end
 end
