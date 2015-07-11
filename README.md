@@ -37,6 +37,12 @@ Attributes
     <td><tt>[]</tt></td>
   </tr>
   <tr>
+    <td><tt>github_username</tt></td>
+    <td>String</td>
+    <td>the GitHub username of the user, used to fetch ssh keys if <tt>ssh_keys</tt> is empty</td>
+    <td><tt>""</tt></td>
+  </tr>
+  <tr>
     <td><tt>shell</tt></td>
     <td>String</td>
     <td>Path to the shell to use</td>

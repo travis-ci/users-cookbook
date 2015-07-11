@@ -29,17 +29,22 @@ package 'zsh' do
   only_if { node['users'].any? { |u| u['shell'] == '/bin/zsh' } }
 end
 
-node['users'].each do |user|
+Array(node['users']).each do |user|
   user user['id'] do
     supports manage_home: true
     home "/home/#{user['id']}"
     shell user['shell']
   end
 
-  directory "/home/#{user['id']}/.ssh" do
-    owner user['id']
-    group user['id']
-    mode 0700
+  %W(
+    /home/#{user['id']}
+    /home/#{user['id']}/.ssh
+  ).each do |dirname|
+    directory dirname do
+      owner user['id']
+      group user['id']
+      mode 0700
+    end
   end
 
   template "/home/#{user['id']}/.ssh/authorized_keys" do
@@ -48,5 +53,14 @@ node['users'].each do |user|
     mode 0644
     source 'authorized_keys.erb'
     variables(keys: user['ssh_keys'])
+    not_if { Array(user['ssh_keys']).empty? }
+  end
+
+  users_github_keys user['id'] do
+    github_username user['github_username']
+
+    only_if do
+      Array(user['ssh_keys']).empty? && !user['github_username'].empty?
+    end
   end
 end
