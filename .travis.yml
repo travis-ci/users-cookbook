@@ -17,3 +17,5 @@ install:
 script:
 - rubocop
 - foodcritic -t '~FC022' .
+before_install:
+  - gem install rubygems-update -v 3.4.22
